@@ -1,0 +1,6 @@
+Para compilar:
+crear una carpeta que se llama build ahí se almacenan los .so y los ejecutables
+mkdir build && cd build
+cmake ..
+make
+./trajectory
