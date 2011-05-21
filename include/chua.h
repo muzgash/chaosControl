@@ -1,13 +1,25 @@
 #ifndef CHUA_H
 #define CHUA_H
 
+#include<vector>
+
+using namespace std;
 
 class chua{
   public:
     chua(double a, double b,double mm0, double mm1,
 	 double sstep, double ttf);
 	       
-    double* find();
+    vector<double>* find();
+    
+    //mutators
+    void setParameters(double *params);
+    void setControlWeight(double c);
+    void setPeriod(double T);
+    void setInitialConditions(double *ic);
+    void setTransientTime(double tt);
+    void setFinalTime(double ft);
+    void setStep(double s);
     
   private:
     //parameters
@@ -15,10 +27,10 @@ class chua{
     //parameter of possible control
     double C;
     
-    double step,tf;
+    double step,finalTime, transientTime, period;
     double *err;
     double *pos;
-    double *trajectory;
+    vector<double> *timeSeries;
     
 };
 
