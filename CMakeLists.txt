@@ -11,14 +11,14 @@ INCLUDE_DIRECTORIES( include )
 
 ADD_DEFINITIONS( -std=c++0x )
 
-add_library(chua SHARED
-include/chua.h
-src/chua.cpp
+add_library(rossler SHARED
+include/rossler.h
+src/rossler.cpp
 )
 
 ADD_EXECUTABLE( pyragas test/find.cpp )
 
-target_link_libraries(pyragas chua gsl gslcblas )
+target_link_libraries(pyragas rossler gsl gslcblas )
 
 ADD_CUSTOM_TARGET( wipe 
  COMMAND rm -rf ../etc/*.dat ../etc/*.eps)
