@@ -16,7 +16,9 @@ include/chua.h
 src/chua.cpp
 )
 
-ADD_EXECUTABLE( trajectory test/trajectory.cpp )
+ADD_EXECUTABLE( trajectory test/find.cpp )
 
 target_link_libraries(trajectory chua gsl gslcblas )
 
+ADD_CUSTOM_TARGET( wipe 
+ COMMAND rm -rf ../etc/*.dat ../etc/*.eps)
