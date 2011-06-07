@@ -10,7 +10,8 @@ class chua{
     chua(double a, double b,double mm0, double mm1,
 	 double sstep, double ttf);
 	       
-    vector<double>* find();
+    vector<double>* pyragas();
+    int isPeriodic();
     
     //mutators
     void setParameters(double *params);
@@ -21,16 +22,20 @@ class chua{
     void setFinalTime(double ft);
     void setStep(double s);
     
+    vector<double>* get_ts2();
+    
   private:
     //parameters
     double gamma,alpha,beta,m0,m1;
     //parameter of possible control
     double C;
     
-    double step,finalTime, transientTime, period;
+    double step,finalTime, transientTime;
+    double period, sampleRating;
     double *err;
     double *pos;
     vector<double> *timeSeries;
+    vector<double> *timeSeries2;
     
 };
 
