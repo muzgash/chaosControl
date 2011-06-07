@@ -12,7 +12,7 @@ int main(int argc, char **argv){
   double p[6]={0.5,1.3,2.25,2.3,2.85,2.9};
   for(int i=0;i<6;i++){
     rossler cc(0.25,3.0,0.5,0.05,
-	  0.001,400.0);
+	  0.001,500.0);
   
     vector<double> *y,*y2;
     y=new vector<double>;

@@ -1,17 +1,17 @@
-#ifndef CHUA_H
-#define CHUA_H
+#ifndef ROSSLER_H
+#define ROSSLER_H
 
 #include<vector>
 
 using namespace std;
 
-class chua{
+class rossler{
   public:
-    chua(double aa, double bb,double cc, double dd,
+    rossler(double aa, double bb,double cc, double dd,
 	 double sstep, double ttf);
 	       
     vector<double>* pyragas();
-    int isPeriodic();
+    int isPeriodic(double a[4][30], double b[4][30]);
     
     //mutators
     void setParameters(double *params);

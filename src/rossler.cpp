@@ -1,4 +1,4 @@
-#include<chua.h>
+#include<rossler.h>
 #include<gsl/gsl_odeiv.h>
 #include<gsl/gsl_errno.h>
 
@@ -25,7 +25,7 @@ int equations(double t, const double y[], double f[],
   return GSL_SUCCESS;
 }
 
-chua::chua(double aa, double bb,double cc, double dd,
+rossler::rossler(double aa, double bb,double cc, double dd,
 	   double sstep, double ttf){
   timeSeries=new vector<double>;
   timeSeries2=new vector<double>;
@@ -48,46 +48,46 @@ chua::chua(double aa, double bb,double cc, double dd,
 }
 
 //mutators
-void chua::setParameters(double *params){
+void rossler::setParameters(double *params){
   a=params[0];
   b=params[1];
   c=params[2];
   d=params[3];
 }
 
-void chua::setControlWeight(double c){   
+void rossler::setControlWeight(double c){   
   C=c; 
 }
 
-void chua::setPeriod(double T){
+void rossler::setPeriod(double T){
   period=T;
 }
 
-void chua::setInitialConditions(double *ic){
+void rossler::setInitialConditions(double *ic){
   pos[0]=ic[0];
   pos[1]=ic[1];
   pos[2]=ic[2];
   pos[3]=ic[3];
 }
 
-void chua::setTransientTime(double tt){
+void rossler::setTransientTime(double tt){
   transientTime=tt;
 }
 
-void chua::setFinalTime(double ft){
+void rossler::setFinalTime(double ft){
   finalTime=ft;
 }
 
-void chua::setStep(double s){
+void rossler::setStep(double s){
   step=s;
 }
 
- vector<double>* chua::get_ts2(){
+ vector<double>* rossler::get_ts2(){
   return timeSeries2;
  }
 
 //UPO finding
-vector<double>* chua::pyragas(){
+vector<double>* rossler::pyragas(){
 
   vector<double> feedback;//2.456;
   double params[6]={a,b,c,d,C,0.0};//crear atributo de clase
@@ -106,24 +106,26 @@ vector<double>* chua::pyragas(){
   //filling of the feedback vector
   for(t=transientTime;t<transientTime+period;t+=step){
     if(gsl_odeiv_step_apply(WT,t,step,pos,err,NULL,NULL,&sys)!=GSL_SUCCESS) break;
-    feedback.push_back(pos[0]);
+    feedback.push_back(pos[2]);
   }
 //   cout<<"t= "<<t<<" period="<<20*period<<" FB size="<<feedback.size()<<endl;
 //   cout.flush();
   //now the control comes
+  double periodicity0[30],periodicity1[30]; //variables to know if there's periodicity
   for(i=0;i<(int)((finalTime-transientTime-period)/period);i++){
     int n=0;
     while(t<transientTime+(i+1)*period){
       params[5]=feedback[n];
       sys={equations,NULL,4,&params};
       if(gsl_odeiv_step_apply(WT,t,step,pos,err,NULL,NULL,&sys)!=GSL_SUCCESS) break;
-      if(t>transientTime+100*period){
+      if(t>transientTime+200*period){
+	
 	timeSeries->push_back(pos[2]);
 	timeSeries2->push_back(pos[1]);
-// 	cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<endl;
+	cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<endl;
 // 	cout.flush();
       }
-      cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<endl;
+//       cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<endl;
 //       cout<<pos[1];
       feedback[n]=pos[2];
 //       cout<<n;
@@ -139,11 +141,16 @@ vector<double>* chua::pyragas(){
   return timeSeries;
 }
 
-int chua::isPeriodic(){
-  double a=0.0,b=0.0;
-  for(int i=100;i<500;i++){
-    a+=timeSeries->at(i);
-    b+=timeSeries->at(i+int(period/step));
+int rossler::isPeriodic(double a[4][30], double b[4][30]){
+  int count=0;
+  double tol=0.02;
+  for(int i=0;i<30;i++){
+    double mod=0;
+    for(int j=0;j<4;j++){//square distance
+      mod+=pow(a[j][i]-b[j][i],2);
+    }
+    if(mod<=tol) count++;
   }
-  cout<<a/400<<" "<<b/400<<endl;
+  if(count>25) return true;
+  else return false;
 }
