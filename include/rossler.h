@@ -7,7 +7,7 @@ using namespace std;
 
 class chua{
   public:
-    chua(double a, double b,double mm0, double mm1,
+    chua(double aa, double bb,double cc, double dd,
 	 double sstep, double ttf);
 	       
     vector<double>* pyragas();
@@ -26,7 +26,7 @@ class chua{
     
   private:
     //parameters
-    double gamma,alpha,beta,m0,m1;
+    double a,b,c,d;
     //parameter of possible control
     double C;
     

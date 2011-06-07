@@ -20,18 +20,18 @@ for name in fname:
   tf=tf/np.max(tf) #normalizo
   x=np.linspace(1,len(tf)/2,len(tf)/2)/(0.001*len(tf))
   
-  fig=plt.figure(figsize=(40.96,21.60))
+  fig=plt.figure(figsize=(10.24,7.68))#(40.96,21.60))
   graph=fig.add_subplot(111)
-  graph.xaxis.set_major_locator(plt.MaxNLocator(60))
+  graph.xaxis.set_major_locator(plt.MaxNLocator(10))
   
   graph.plot(x[:500],tf[:500])
 
   plt.draw()
   plt.savefig(name+"FFT.eps")
   
-  fig=plt.figure(figsize=(40.96,21.60))
+  fig=plt.figure(figsize=(10.24,7.68))#(40.96,21.60))
   graph=fig.add_subplot(111)
-  graph.xaxis.set_major_locator(plt.MaxNLocator(60))
+  graph.xaxis.set_major_locator(plt.MaxNLocator(10))
   x=np.linspace(0,len(data),len(data))
   graph.plot(x*0.001,data)
   plt.draw()
@@ -43,9 +43,9 @@ for name in fname:
   for line2 in f2:
     data2.append(float(line2.split()[1]))
     #data.append(float(line2.split()[0]))
-  fig=plt.figure(figsize=(40.96,21.60))
+  fig=plt.figure(figsize=(10.24,7.68))#(40.96,21.60))
   graph=fig.add_subplot(111)
-  graph.xaxis.set_major_locator(plt.MaxNLocator(60))
+  graph.xaxis.set_major_locator(plt.MaxNLocator(10))
   graph.plot(data,data2)
   plt.draw()
   plt.savefig(name+"_2d.eps")

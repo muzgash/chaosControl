@@ -9,38 +9,39 @@ using namespace std;
 
 int equations(double t, const double y[], double f[],
 	   void *params){
-  ///Parameters are alpha, beta,m0,m1,Control, Feedback in that order
+  ///Parameters are a, b,c,d,Control, Feedback in that order
   
   double *par=(double*)params;
-  double gamma=0.0;
   double a=par[0];//9.0;
   double b=par[1];//14.286;
-  double m0=par[2];//-1.1428571428571428;
-  double m1=par[3];//-0.7142857142857143;
+  double c=par[2];//-1.1428571428571428;
+  double d=par[3];//-0.7142857142857143;
   double C=par[4];//0.0;
   double F=par[5];//0.0;
-  f[0] = a*(y[1]-y[0]-m1*y[0]-0.5*(m0-m1)*(fabs(y[0]+1)-fabs(y[0]-1)))+C*(F-y[0]);
-  f[1] = y[0]-y[1]+y[2];
-  f[2] = -b*y[1]-gamma*y[2];
+  f[0] = -y[1]-y[2];
+  f[1] = y[0]+a*y[1]+y[3];
+  f[2] = b+y[0]*y[2]+C*(F-y[2]);
+  f[3] = -c*y[2]+d*y[3];
   return GSL_SUCCESS;
 }
 
-chua::chua(double a, double b,double mm0, double mm1,
+chua::chua(double aa, double bb,double cc, double dd,
 	   double sstep, double ttf){
   timeSeries=new vector<double>;
   timeSeries2=new vector<double>;
-  alpha=a;
-  beta=b;
-  m0=mm0;
-  m1=mm1;
+  a=aa;
+  b=bb;
+  c=cc;
+  d=dd;
   C=0.0;
   step=sstep;
   finalTime=ttf;
-  pos=new double[3];
-  pos[0]=0.50;//-1.0;
-  pos[1]=-0.43;//-0.3;
-  pos[2]=0.60;//0.1;
-  err=new double[3];
+  pos=new double[4];
+  pos[0]=-10.0;//-1.0;
+  pos[1]=-6.0;//-0.3;
+  pos[2]=0.0;//0.1;
+  pos[3]=10.0;
+  err=new double[4];
   transientTime=100;
   period=2.85;
   sampleRating=finalTime/step;
@@ -48,10 +49,10 @@ chua::chua(double a, double b,double mm0, double mm1,
 
 //mutators
 void chua::setParameters(double *params){
-  alpha=params[0];
-  beta=params[1];
-  m0=params[2];
-  m1=params[3];
+  a=params[0];
+  b=params[1];
+  c=params[2];
+  d=params[3];
 }
 
 void chua::setControlWeight(double c){   
@@ -66,6 +67,7 @@ void chua::setInitialConditions(double *ic){
   pos[0]=ic[0];
   pos[1]=ic[1];
   pos[2]=ic[2];
+  pos[3]=ic[3];
 }
 
 void chua::setTransientTime(double tt){
@@ -88,11 +90,11 @@ void chua::setStep(double s){
 vector<double>* chua::pyragas(){
 
   vector<double> feedback;//2.456;
-  double params[6]={alpha,beta,m0,m1,C,0.0};//crear atributo de clase
+  double params[6]={a,b,c,d,C,0.0};//crear atributo de clase
 
   const gsl_odeiv_step_type *T=gsl_odeiv_step_rk4;
-  gsl_odeiv_step *WT=gsl_odeiv_step_alloc(T,3);
-  gsl_odeiv_system sys={equations,NULL,3,&params};
+  gsl_odeiv_step *WT=gsl_odeiv_step_alloc(T,4);
+  gsl_odeiv_system sys={equations,NULL,4,&params};
   
   int i=0;
   double t=0.0;
@@ -113,16 +115,17 @@ vector<double>* chua::pyragas(){
     int n=0;
     while(t<transientTime+(i+1)*period){
       params[5]=feedback[n];
-      sys={equations,NULL,3,&params};
+      sys={equations,NULL,4,&params};
       if(gsl_odeiv_step_apply(WT,t,step,pos,err,NULL,NULL,&sys)!=GSL_SUCCESS) break;
       if(t>transientTime+100*period){
-	timeSeries->push_back(pos[0]);
+	timeSeries->push_back(pos[2]);
 	timeSeries2->push_back(pos[1]);
-// 	cout<<pos[0]<<" "<<pos[1]<<endl;
+// 	cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<endl;
 // 	cout.flush();
       }
+      cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<endl;
 //       cout<<pos[1];
-      feedback[n]=pos[0];
+      feedback[n]=pos[2];
 //       cout<<n;
 //       cout.flush();
       n++;

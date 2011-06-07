@@ -16,9 +16,9 @@ include/chua.h
 src/chua.cpp
 )
 
-ADD_EXECUTABLE( trajectory test/find.cpp )
+ADD_EXECUTABLE( pyragas test/find.cpp )
 
-target_link_libraries(trajectory chua gsl gslcblas )
+target_link_libraries(pyragas chua gsl gslcblas )
 
 ADD_CUSTOM_TARGET( wipe 
  COMMAND rm -rf ../etc/*.dat ../etc/*.eps)

@@ -11,14 +11,14 @@ int main(int argc, char **argv){
   ofstream atractor;
   double p[6]={0.5,1.3,2.25,2.3,2.85,2.9};
   for(int i=0;i<6;i++){
-    chua cc(9.0,14.286,-1.1428571428571428,-0.7142857142857143,
+    chua cc(0.25,3.0,0.5,0.05,
 	  0.001,400.0);
   
     vector<double> *y,*y2;
     y=new vector<double>;
     y2=new vector<double>;
 //   for(double c=0.01;c<=1;c+=0.001){
-    cc.setControlWeight(0.3);
+    cc.setControlWeight(0.4);
   
     cc.setPeriod(p[i]);
     y=cc.pyragas();
@@ -30,7 +30,7 @@ int main(int argc, char **argv){
     name<<"../etc/timeSeries_"<<p[i]<<".dat";
     tSData.open(name.str());
     name2d<<"../etc/timeSeries_"<<p[i]<<"_2d.dat";
-    atractor.open(name.str());
+    atractor.open(name2d.str());
     
     for(int j=0;j<y->size();j++){
       atractor<<y->at(j)<<" "<<y2->at(j)<<endl;
