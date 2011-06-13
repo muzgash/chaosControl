@@ -7,9 +7,17 @@ from scipy import fftpack as fft
 p=[0.5,1.3,2.25,2.3,2.85,2.9]
 fname=[]
 
-for n in p:
+for n in np.arange(0.5,5.5,0.1):
   fname.append("timeSeries_%s" % n)
 
+fname.remove("timeSeries_1.0")
+fname.remove("timeSeries_2.0")
+fname.remove("timeSeries_3.0")
+fname.remove("timeSeries_4.0")
+fname.remove("timeSeries_5.0")
+
+for n in range(1,6): 
+ fname.append("timeSeries_%s" % n)
 for name in fname:
   f=open(name+".dat")
   data=[]
