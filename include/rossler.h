@@ -11,7 +11,9 @@ class rossler{
 	 double sstep, double ttf);
 	       
     vector<double>* pyragas();
-    int isPeriodic(double a[4][30], double b[4][30]);
+    bool attractor();
+    int areEqual(double a[4][30], double b[4][30]);
+    int isPeriodic;
     
     //mutators
     void setParameters(double *params);
